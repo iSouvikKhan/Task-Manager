@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios"
 import { backendUrl } from '@/config/ApiConfig';
@@ -23,6 +23,12 @@ export function LoginForm() {
     const [errors, setErrors] = useState({ email: "", password: "", server: "" });
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        if(localStorage.getItem("token")){
+            router.push("/home/list");
+        }
+    })
 
     const validateForm = () => {
         let valid = true;
@@ -39,9 +45,6 @@ export function LoginForm() {
         if (!password) {
             newErrors.password = "Password is required.";
             valid = false;
-        } else if (password.length < 6) {
-            newErrors.password = "Password must be at least 6 characters.";
-            valid = false;
         }
 
         setErrors(newErrors);
@@ -51,25 +54,31 @@ export function LoginForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors({ email: "", password: "", server: "" });
-        if (!validateForm()) return;
-
+        if (!validateForm()) {
+            return;
+        }
         setIsLoading(true);
         try {
             const response = await axios.post(`${backendUrl}/api/v1/user/signin`, { email, password })
-
             setIsLoading(false);
-
-            console.log("response", response);
-
-            // if (response.ok) {
-            //     router.push("/home/list");
-            // } else {
-            //     setErrors((prevErrors) => ({ ...prevErrors, server: result.message || "Login failed. Please try again." }));
-            // }
+            if (response.status === 201) {
+                localStorage.setItem("token", response.data.token);
+                router.push("/home/list");
+            }
         } catch (error) {
             setIsLoading(false);
-            setErrors((prevErrors) => ({ ...prevErrors, server: "Something went wrong. Please try again later." }));
+
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    setErrors((prevErrors) => ({ ...prevErrors, server: error.response?.data.message }));
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                }
+            } else {
+                setErrors((prevErrors) => ({ ...prevErrors, server: "Something went wrong. Please try again later." }));
+            }
         }
+
     };
 
 
@@ -114,7 +123,7 @@ export function LoginForm() {
                                 <Button type="submit" className="w-full mb-6" disabled={isLoading} onClick={handleSubmit}>
                                     {isLoading ? "Logging in..." : "Login"}
                                 </Button>
-                                {errors.server && <p className="text-red-600 text-sm">{errors.server}</p>}
+                                {errors.server && <p className="text-red-600 text-sm mb-3">{errors.server}</p>}
                                 Don't have an account?{" "}
                                 <Link href="/signup" className="underline">
                                     Sign up

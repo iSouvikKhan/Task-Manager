@@ -12,13 +12,13 @@ export const auth = (req: any, res: any, next: any): void => {
                 req.email = user.userId;
                 next();
             } else {
-                return res.status(411).json({
+                return res.status(400).json({
                     message: "authentication failed in auth middleware"
                 })
             }
 
         } else {
-            return res.status(411).json({
+            return res.status(400).json({
                 message: "your sessaion has expired, sign in again",
             })
         }
