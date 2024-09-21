@@ -21,7 +21,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     try {
         const { success } = SignupSchema.safeParse(req.body);
         if (!success) {
-            return res.status(411).json({
+            return res.status(201).json({
                 message: "signup input requirement does not match"
             })
         }
@@ -29,7 +29,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.findOne({ email });
         if (user?._id) {
-            return res.status(411).json({
+            return res.status(201).json({
                 "message": "user already exists"
             })
         }
@@ -43,7 +43,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
                 "token": "Bearer " + token,
             })
         } else {
-            return res.status(411).json({
+            return res.status(210).json({
                 "message": "error occurred while user creation",
             })
         }
@@ -61,14 +61,14 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
     try {
         const { success } = SigninSchema.safeParse(req.body);
         if (!success) {
-            return res.status(411).json({
+            return res.status(201).json({
                 message: "signin input requirement does not match"
             })
         }
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(411).json({
+            return res.status(201).json({
                 "message": "user does not exist",
             })
         } else if(user && await bcrypt.compare(password as string, user.password as string)) {
@@ -81,7 +81,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
                     "token": "Bearer " + token,
                 })
             } else {
-                return res.status(411).json({
+                return res.status(201).json({
                     "message": "error occurred while signin",
                 })
             }

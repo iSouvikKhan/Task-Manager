@@ -1,11 +1,11 @@
-import { Signup } from "@/components/Signup";
+import { Signin } from "@/components/Login";
 
-export default function Home() {
+export default function LoginPage() {
   return (
     <>
-    <div>
-      <Signup />
-    </div>
+      <div>
+        <Signin />
+      </div>
     </>
   );
 }

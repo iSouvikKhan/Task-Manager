@@ -23,7 +23,7 @@ export function SignupForm() {
             </CardHeader>
             <CardContent>
                 <div>
-                    <div className="grid gap-12">
+                    <div className="grid gap-6 sm:gap-8 md:gap-10 xl:gap-12">
                         <div className="grid gap-2">
                             <Label htmlFor="first-name">Full name</Label>
                             <Input id="first-name" placeholder="enter your name" required />
@@ -33,7 +33,7 @@ export function SignupForm() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="example@gmail.com"
+                                placeholder="ex@gmail.com"
                                 required
                             />
                         </div>
@@ -46,8 +46,8 @@ export function SignupForm() {
                                 Create an account
                             </Button>
                             Already have an account?{" "}
-                            <Link href="#" className="underline">
-                                Sign in
+                            <Link href="/" className="underline">
+                                    Login
                             </Link>
                         </div>
                     </div>

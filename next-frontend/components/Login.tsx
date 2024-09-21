@@ -1,9 +1,9 @@
+import { LoginForm } from "./LoginForm"
 import { ModeToggle } from "./ModeToggle"
-import { SignupForm } from "./SignupForm"
 
 
 
-export const Signup = () => {
+export const Signin = () => {
     return (
         <>
             <div className="flex flex-col min-h-screen space-y-6">
@@ -15,19 +15,19 @@ export const Signup = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 h-full w-full">
                             <div className="flex flex-col justify-evenly items-center px-10 space-y-4 lg:space-y-0 mb-6 lg:mb-0">
                                 <div className="text-2xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl">
-                                    <p className="md:inline lg:block mb-0 lg:mb-2">Organize smarter, </p>
-                                    <p className="md:inline lg:block">Accomplish faster.</p>
+                                    <p className="md:inline lg:block mb-0 lg:mb-2">Get organized, </p>
+                                    <p className="md:inline lg:block">Achieve more.</p>
                                 </div>
                                 <div className="text-xl sm:text-2xl md:text-xl lg:text-2xl xl:text-3xl">
-                                    <p className="md:inline lg:block mb-0 lg:mb-2">Your tasks, simplified. </p>
-                                    <p className="md:inline lg:block">Your goals, achieved.</p>
+                                    <p className="md:inline lg:block mb-0 lg:mb-2">Tasks made easy, </p>
+                                    <p className="md:inline lg:block">Goals within reach.</p>
                                 </div>
                                 <div className="hidden lg:block text-xl sm:text-2xl md:text-xl lg:text-2xl xl:text-3xl">
-                                    <p>Sign up &#126;&#62;</p>
+                                    <p>Sign in &#126;&#62;</p>
                                 </div>
                             </div>
                             <div className="flex justify-center items-center">
-                                <SignupForm />
+                                <LoginForm />
                             </div>
                         </div>
                     </div>

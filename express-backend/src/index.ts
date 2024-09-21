@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { router } from "./routes/index";
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const app = express();
 
 const whitelist = ['http://localhost:3000'];
