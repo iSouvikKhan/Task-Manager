@@ -49,3 +49,82 @@ taskRouter.get("/getall", auth, async (req: CustomRequest, res: Response) => {
         })
     }
 })
+
+taskRouter.put("/edit/:id", auth, async (req: CustomRequest, res: Response) => {
+    try {
+        const { title, description, status, priority, duedate } = req.body;
+        const userId = req.userId;
+        const _id = req.params.id;
+
+        const updatedTask = await Task.findOneAndUpdate(
+            { _id, userId },
+            { title, description, status, priority, duedate },
+            { new: true }
+        );
+
+        if (updatedTask) {
+            return res.status(200).json({
+                message: "Task updated successfully",
+            });
+        } else {
+            return res.status(400).json({
+                message: "Task not found or you do not have permission to edit it",
+            });
+        }
+    } catch (ex) {
+        return res.status(500).json({
+            message: "An error occurred while updating the task",
+        });
+    }
+});
+
+taskRouter.delete("/delete/:id", auth, async (req: CustomRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        const _id = req.params.id;
+
+        const deletedTask = await Task.findOneAndDelete({ _id, userId });
+
+        if (deletedTask) {
+            return res.status(200).json({
+                message: "Task deleted successfully",
+            });
+        } else {
+            return res.status(400).json({
+                message: "Task not found or you do not have permission to delete it",
+            });
+        }
+    } catch (ex) {
+        return res.status(500).json({
+            message: "An error occurred while deleting the task",
+        });
+    }
+});
+
+taskRouter.patch("/status/:id", auth, async (req: CustomRequest, res: Response) => {
+    try {
+        const { status } = req.body;
+        const userId = req.userId;
+        const _id = req.params.id;
+
+        const updatedTask = await Task.findOneAndUpdate(
+            { _id, userId },
+            { status },
+            { new: true }
+        );
+
+        if (updatedTask) {
+            return res.status(200).json({
+                message: "Task status updated successfully",
+            });
+        } else {
+            return res.status(400).json({
+                message: "Task not found or you do not have permission to edit it",
+            });
+        }
+    } catch (ex) {
+        return res.status(500).json({
+            message: "An error occurred while updating the task",
+        });
+    }
+});

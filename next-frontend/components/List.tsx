@@ -4,13 +4,12 @@ import * as React from "react"
 import {
     CaretSortIcon,
     ChevronDownIcon,
-    DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
 import {
     ColumnDef,
     ColumnFiltersState,
     SortingState,
-    VisibilityState,
+    VisibilityState, 
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -24,9 +23,6 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -149,51 +145,59 @@ export const columns: ColumnDef<Task>[] = [
         // },
 
         cell: ({ row }) => {
-            const dateValue: Date = row.getValue("duedate");  // Get the raw value
-            const date = new Date(dateValue);  // Convert it to a Date object
-        
-            // Check if the date is valid
+            const dateValue: Date = row.getValue("duedate");
+            const date = new Date(dateValue);
+
             if (isNaN(date.getTime())) {
-                return <div className="normal-case">Invalid date</div>;  // Handle invalid date
+                return <div className="normal-case">Invalid date</div>;
             }
-        
+
             // Format the valid date
             const formattedDate = new Intl.DateTimeFormat("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
             }).format(date);
-        
+
             return <div className="normal-case">{formattedDate}</div>;
         },
     },
     {
-        id: "actions",
-        enableHiding: false,
+        accessorKey: "action",
+        header: () => <div className="text-center">Action</div>,
         cell: ({ row }) => {
-            const payment = row.original
+            const task = row.original;
+            const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
+
+            const handleDeleteTask = async (task: Task) => {
+                try {
+                    const token = localStorage.getItem("token");
+                    const response = await axios.delete(`${backendUrl}/api/v1/task/delete/${task._id}`,
+                        {
+                            headers: { authorization: token },
+                        });
+
+                    if (response.status === 200) {
+                        console.log("Task deleted successfully");
+                    }
+                } catch (error) {
+                    console.error("Error deleting task:", error);
+                }
+            };
+
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <DotsHorizontalIcon className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment._id)}
-                        >
-                            Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
+                <div className="flex gap-2">
+                    <AddEditTask
+                        task={task}
+                    />
+
+                    <Button variant="outline" size="sm" onClick={() => handleDeleteTask(task)}>
+                        Delete
+                    </Button>
+                </div>
+            );
         },
-    },
+    }
 ]
 
 export const List = () => {
@@ -206,7 +210,7 @@ export const List = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if(!localStorage.getItem("token")) {
+        if (!localStorage.getItem("token")) {
             router.push("/");
             return;
         }
@@ -216,16 +220,15 @@ export const List = () => {
     const getAllTasks = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${backendUrl}/api/v1/task/getall`, 
+            const response = await axios.get(`${backendUrl}/api/v1/task/getall`,
                 {
                     headers: {
                         'authorization': token,
-                      },
+                    },
                 }
             )
             if (response.status === 200) {
                 setData(response.data.tasks);
-                console.log(data);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
