@@ -1,11 +1,9 @@
 import express, { Request, Response } from "express";
-import { auth } from "../middlewares/auth";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { z } from 'zod';
 import { User } from "../database/db";
 import bcrypt from "bcrypt";
-
 
 dotenv.config();
 export const userRouter = express.Router();

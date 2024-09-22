@@ -5,11 +5,11 @@ dotenv.config();
 
 export const auth = (req: any, res: any, next: any): void => {
     try {
-        const token = req.headers.authorization;
+        const token = req.headers.authorization.split(" ")[1];
         if(token) {
-            const user: any = jwt.verify(token, process.env.JWT_Secret as string);
+            const user: any = jwt.verify(token, process.env.JWT_Sectret as string);
             if(user) {
-                req.email = user.userId;
+                req.userId = user.userId;
                 next();
             } else {
                 return res.status(400).json({
