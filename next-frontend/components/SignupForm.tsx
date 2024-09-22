@@ -29,7 +29,7 @@ export function SignupForm() {
         if (localStorage.getItem("token")) {
             router.push("/home/list");
         }
-    })
+    }, [])
 
     const validateForm = () => {
         let valid = true;

@@ -1,3 +1,4 @@
+import { Appbar } from "@/components/Appbar";
 
 
 export default function RootLayout({
@@ -7,7 +8,7 @@ export default function RootLayout({
 }>) {
     return (
         <div>
-            Navbar is under construction
+            <Appbar />
             <div>
                 {children}
             </div>

@@ -2,6 +2,7 @@ import express from 'express';
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import { router } from "./routes/index";
+import mongoose from "mongoose";
 
 dotenv.config();
 const port = process.env.PORT || 4000;
@@ -28,6 +29,11 @@ app.use("/api/v1", router);
 
 // })
 
-app.listen(port, () => {
-    console.log(`listening at port ${port}`);
-});
+async function main() {
+    await mongoose.connect(process.env.ConnectionString as string)
+    app.listen(port, () => {
+        console.log(`listening at port ${port}`);
+    });
+}
+
+main();

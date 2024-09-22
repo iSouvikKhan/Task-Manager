@@ -18,7 +18,7 @@ import { backendUrl } from '@/config/ApiConfig';
 
 export function LoginForm() {
 
-    const [email, setEmail] = useState("souvik1@gmail.com");
+    const [email, setEmail] = useState("souvik@gmail.com");
     const [password, setPassword] = useState("123123");
     const [errors, setErrors] = useState({ email: "", password: "", server: "" });
     const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,7 @@ export function LoginForm() {
         if(localStorage.getItem("token")){
             router.push("/home/list");
         }
-    })
+    }, [])
 
     const validateForm = () => {
         let valid = true;

@@ -1,11 +1,10 @@
+import { List } from "@/components/List";
 
 
 export default function ListPage() {
     return (
       <>
-        <div>
-          List Page
-        </div>
+        <List />
       </>
     );
   }
