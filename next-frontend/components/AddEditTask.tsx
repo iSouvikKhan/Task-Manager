@@ -28,9 +28,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import axios from "axios"
+import { backendUrl } from "@/config/ApiConfig"
+import { useRouter } from "next/navigation";
 
 
-export const AddEditTask = () => {
+interface AddEditTaskProps {
+    onTaskAdded: () => void;
+}
+
+export const AddEditTask = ({ onTaskAdded }: AddEditTaskProps) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleModal = () => setIsOpen(!isOpen);
@@ -38,8 +45,9 @@ export const AddEditTask = () => {
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("");
     const [priority, setPriority] = useState("");
-    const [duedate, setDuedate] = useState<Date>();
+    const [duedate, setDuedate] = useState<Date | undefined>(undefined);
     const [errors, setErrors] = useState({ title: "", description: "", status: "", priority: "", duedate: "" });
+    const router = useRouter();
 
     const validateForm = () => {
         let valid = true;
@@ -79,6 +87,38 @@ export const AddEditTask = () => {
         setErrors({ title: "", description: "", status: "", priority: "", duedate: "" });
         if (!validateForm()) {
             return;
+        }
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${backendUrl}/api/v1/task/add`, { title, description, status, priority, duedate }, 
+                {
+                    headers: {
+                        'authorization': token,
+                      },
+                }
+            )
+            if (response.status === 201) {
+                onTaskAdded();
+                setIsOpen(false);
+                setTitle("");
+                setDescription("");
+                setStatus("");
+                setPriority("");
+                setDuedate(undefined);
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    localStorage.removeItem("token");
+                    router.push("/");
+                } else if (error.request) {
+                    localStorage.removeItem("token");
+                    router.push("/");
+                }
+            } else {
+                localStorage.removeItem("token");
+                router.push("/");
+            }
         }
     }
 

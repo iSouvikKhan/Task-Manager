@@ -39,9 +39,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { AddEditTask } from "./AddEditTask"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation";
+import axios from "axios"
+import { backendUrl } from "@/config/ApiConfig"
 
 export interface Task {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     status: "To Do" | "In Progress" | "Completed";
@@ -50,53 +54,6 @@ export interface Task {
     duedate: Date;
 }
 
-const data: Task[] = [
-    {
-        id: "m5gr84i9",
-        title: "Aaa",
-        description: "aa to bed",
-        status: "To Do",
-        priority: "Low",
-        email: "aa@gmail.com",
-        duedate: new Date("09/22/2024"),
-    },
-    {
-        id: "3u1reuv4",
-        title: "Bbb",
-        description: "bb to room",
-        status: "In Progress",
-        priority: "High",
-        email: "bb@gmail.com",
-        duedate: new Date("09/23/2024"),
-    },
-    {
-        id: "derv1ws0",
-        title: "Ccc",
-        description: "cc to study",
-        status: "Completed",
-        priority: "Low",
-        email: "cc@gmail.com",
-        duedate: new Date("09/24/2024"),
-    },
-    {
-        id: "5kma53ae",
-        title: "Ddd",
-        description: "dd to post",
-        status: "To Do",
-        priority: "High",
-        email: "dd@gmail.com",
-        duedate: new Date("09/25/2024"),
-    },
-    {
-        id: "bhqecj4p",
-        title: "Eee",
-        description: "ee to ground",
-        status: "In Progress",
-        priority: "Low",
-        email: "ee@gmail.com",
-        duedate: new Date("09/26/2024"),
-    },
-]
 
 export const columns: ColumnDef<Task>[] = [
     {
@@ -180,14 +137,33 @@ export const columns: ColumnDef<Task>[] = [
                 </Button>
             )
         },
+        // cell: ({ row }) => {
+        //     const date: Date = row.getValue("duedate");
+        //     const formattedDate = new Intl.DateTimeFormat("en-US", {
+        //         year: "numeric",
+        //         month: "long",
+        //         day: "numeric",
+        //     }).format(date);
+
+        //     return <div className="normal-case">{formattedDate}</div>;
+        // },
+
         cell: ({ row }) => {
-            const date: Date = row.getValue("duedate");
+            const dateValue: Date = row.getValue("duedate");  // Get the raw value
+            const date = new Date(dateValue);  // Convert it to a Date object
+        
+            // Check if the date is valid
+            if (isNaN(date.getTime())) {
+                return <div className="normal-case">Invalid date</div>;  // Handle invalid date
+            }
+        
+            // Format the valid date
             const formattedDate = new Intl.DateTimeFormat("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
             }).format(date);
-
+        
             return <div className="normal-case">{formattedDate}</div>;
         },
     },
@@ -205,9 +181,9 @@ export const columns: ColumnDef<Task>[] = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
+                            onClick={() => navigator.clipboard.writeText(payment._id)}
                         >
                             Edit
                         </DropdownMenuItem>
@@ -221,11 +197,55 @@ export const columns: ColumnDef<Task>[] = [
 ]
 
 export const List = () => {
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [globalFilter, setGlobalFilter] = React.useState("");
+    const [sorting, setSorting] = useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = useState({})
+    const [globalFilter, setGlobalFilter] = useState("");
+    const [data, setData] = useState<Task[]>([]);
+    const router = useRouter();
+
+    useEffect(() => {
+        if(!localStorage.getItem("token")) {
+            router.push("/");
+            return;
+        }
+        getAllTasks();
+    }, [])
+
+    const getAllTasks = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${backendUrl}/api/v1/task/getall`, 
+                {
+                    headers: {
+                        'authorization': token,
+                      },
+                }
+            )
+            if (response.status === 200) {
+                setData(response.data.tasks);
+                console.log(data);
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    localStorage.removeItem("token");
+                    router.push("/");
+                } else if (error.request) {
+                    localStorage.removeItem("token");
+                    router.push("/");
+                }
+            } else {
+                localStorage.removeItem("token");
+                router.push("/");
+            }
+        }
+    }
+
+    const handleTaskAdded = () => {
+        getAllTasks();
+    };
 
     const table = useReactTable({
         data,
@@ -253,7 +273,7 @@ export const List = () => {
             <div className="flex justify-center pt-5">
                 <div className="w-4/5">
                     <div className="flex justify-end">
-                        <AddEditTask />
+                        <AddEditTask onTaskAdded={handleTaskAdded} />
                     </div>
                 </div>
             </div>

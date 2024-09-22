@@ -23,6 +23,8 @@ export const auth = (req: any, res: any, next: any): void => {
             })
         }
     } catch(ex) {
-        console.log("exception occured at auth middleware", ex);
+        return res.status(400).json({
+            message: "exception occured at auth middleware",
+        })
     }
 }

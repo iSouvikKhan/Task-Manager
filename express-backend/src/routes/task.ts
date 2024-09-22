@@ -23,6 +23,29 @@ taskRouter.post("/add", auth, async (req: CustomRequest, res: Response) => {
             })
         }
     } catch (ex) {
-        console.log("exception at add route", ex);
+        return res.status(400).json({
+            "message": "exception at add route",
+        })
+    }
+})
+
+taskRouter.get("/getall", auth, async (req: CustomRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        const tasks = await Task.find({ userId });
+        if (tasks) {
+            return res.status(200).json({
+                "message": "tasks retrieved successfully",
+                tasks
+            })
+        } else {
+            return res.status(400).json({
+                "message": "error occurred while getting task",
+            })
+        }
+    } catch (ex) {
+        return res.status(400).json({
+            "message": "exception at getall route",
+        })
     }
 })
