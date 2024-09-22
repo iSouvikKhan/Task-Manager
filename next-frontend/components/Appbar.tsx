@@ -16,8 +16,8 @@ export const Appbar = () => {
                 </div>
                 <div className="py-5">
                     <div className="flex justify-center">
-                        <div className="w-7/12">
-                            <ul className="w-full border-2 border-slate-600 flex justify-between items-center text-xl p-1 px-5 rounded-lg">
+                        <div className="w-11/12 lg:w-7/12">
+                            <ul className="w-full border-2 border-slate-600 flex justify-between items-center text-base lg:text-xl p-1 px-5 rounded-lg">
                                 <Link href="/home/list" className="hover:bg-slate-200 p-2 rounded-lg">List</Link>
                                 <Link href="/home/kanban" className="hover:bg-slate-200 p-2 rounded-lg">Kanban</Link>
                                 <button className="hover:bg-slate-200 p-2 rounded-lg" onClick={() => {

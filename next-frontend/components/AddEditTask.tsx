@@ -142,7 +142,7 @@ export const AddEditTask = ({ task, onTaskAdded }: AddEditTaskProps) => {
                     <Button variant="outline" className={task ? "" : ""} size={task ? "sm" : "lg"}>{task ? "Edit" : "Add Task"}</Button>
                 </DialogTrigger>
                 <form onSubmit={handleSubmit}>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>Add Task</DialogTitle>
                             <DialogDescription>

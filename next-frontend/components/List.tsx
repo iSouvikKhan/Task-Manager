@@ -164,7 +164,7 @@ export const columns: ColumnDef<Task>[] = [
     },
     {
         accessorKey: "action",
-        header: () => <div className="text-center">Action</div>,
+        header: () => <div className="text-left ml-5">Actions</div>,
         cell: ({ row }) => {
             const task = row.original;
             const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
