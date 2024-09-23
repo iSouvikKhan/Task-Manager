@@ -51,7 +51,7 @@ export interface Task {
 }
 
 
-export const columns: ColumnDef<Task>[] = [
+export const createColumns = (handleTaskAdded: () => void): ColumnDef<Task>[] => [
     {
         accessorKey: "title",
         header: ({ column }) => {
@@ -167,7 +167,6 @@ export const columns: ColumnDef<Task>[] = [
         header: () => <div className="text-left ml-5">Actions</div>,
         cell: ({ row }) => {
             const task = row.original;
-            const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
 
             const handleDeleteTask = async (task: Task) => {
                 try {
@@ -179,6 +178,7 @@ export const columns: ColumnDef<Task>[] = [
 
                     if (response.status === 200) {
                         console.log("Task deleted successfully");
+                        handleTaskAdded();
                     }
                 } catch (error) {
                     console.error("Error deleting task:", error);
@@ -189,6 +189,7 @@ export const columns: ColumnDef<Task>[] = [
                 <div className="flex gap-2">
                     <AddEditTask
                         task={task}
+                        onTaskAdded={handleTaskAdded}
                     />
 
                     <Button variant="outline" size="sm" onClick={() => handleDeleteTask(task)}>
@@ -249,6 +250,8 @@ export const List = () => {
     const handleTaskAdded = () => {
         getAllTasks();
     };
+
+    const columns = createColumns(handleTaskAdded);
 
     const table = useReactTable({
         data,
