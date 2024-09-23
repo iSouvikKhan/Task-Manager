@@ -167,6 +167,7 @@ export const createColumns = (handleTaskAdded: () => void): ColumnDef<Task>[] =>
         header: () => <div className="text-left ml-5">Actions</div>,
         cell: ({ row }) => {
             const task = row.original;
+            const router = useRouter();
 
             const handleDeleteTask = async (task: Task) => {
                 try {
@@ -182,6 +183,8 @@ export const createColumns = (handleTaskAdded: () => void): ColumnDef<Task>[] =>
                     }
                 } catch (error) {
                     console.error("Error deleting task:", error);
+                    localStorage.removeItem("token");
+                    router.push("/");
                 }
             };
 
