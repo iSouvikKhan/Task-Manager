@@ -10,7 +10,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') });
 const port = process.env.PORT || 4000;
 const app = express();
 
-const whitelist = ['http://localhost:3000'];
+const whitelist = ['http://localhost:3000', 'https://task-manager-neon-six.vercel.app/'];
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
