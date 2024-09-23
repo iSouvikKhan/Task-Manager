@@ -1,5 +1,6 @@
 {
     "version": 2,
+    "outputDirectory": "dist"
     "builds": [
       {
         "src": "dist/index.js",
@@ -11,6 +12,6 @@
         "src": "/(.*)",
         "dest": "dist/index.js"
       }
-    ]
+    ],
   }
   
