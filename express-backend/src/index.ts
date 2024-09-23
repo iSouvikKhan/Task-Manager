@@ -3,8 +3,10 @@ import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import { router } from "./routes/index";
 import mongoose from "mongoose";
+import { resolve } from 'path';
 
-dotenv.config();
+// dotenv.config();
+dotenv.config({ path: resolve(__dirname, '../.env') });
 const port = process.env.PORT || 4000;
 const app = express();
 
