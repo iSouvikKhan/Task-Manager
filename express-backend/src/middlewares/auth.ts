@@ -16,15 +16,48 @@ export const auth = (req: any, res: any, next: any): void => {
                     message: "authentication failed in auth middleware"
                 })
             }
-
-        } else {
-            return res.status(400).json({
-                message: "your sessaion has expired, sign in again",
-            })
         }
     } catch(ex) {
-        return res.status(400).json({
-            message: "exception occured at auth middleware",
-        })
+        if (ex instanceof TokenExpiredError) {
+            return res.status(401).json({
+                message: "Token has expired. Please log out and sign in again.",
+            });
+        } else if (ex instanceof JsonWebTokenError) {
+            return res.status(401).json({
+                message: "Invalid token. Please sign in again.",
+            });
+        } else {
+            console.error("Error in auth middleware:", ex);
+            return res.status(500).json({
+                message: "exception occured at auth middleware",
+            });
+        }
+
     }
 }
+
+// export const auth = (req: any, res: any, next: any): void => {
+//     try {
+//         const token = req.headers.authorization.split(" ")[1];
+//         if(token) {
+//             const user: any = jwt.verify(token, process.env.JWT_Sectret as string);
+//             if(user) {
+//                 req.userId = user.userId;
+//                 next();
+//             } else {
+//                 return res.status(400).json({
+//                     message: "authentication failed in auth middleware"
+//                 })
+//             }
+
+//         } else {
+//             return res.status(400).json({
+//                 message: "your sessaion has expired, sign in again",
+//             })
+//         }
+//     } catch(ex) {
+//         return res.status(400).json({
+//             message: "exception occured at auth middleware",
+//         })
+//     }
+// }
